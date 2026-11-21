@@ -54,7 +54,7 @@ function renderResults() {
   }).join('');
   $('#storage').textContent = state.storage === 'opfs'
     ? 'Your preferences are stored only in this browser (private browser storage). Nothing is sent anywhere.'
-    : 'Running in memory: your changes will NOT be saved. This usually means the app is already open in another tab. Close the other tab and reload to use saved storage.';
+    : 'Running in memory: your changes will NOT be saved. This happens if the app is already open in another tab, inside an embedded preview, or in a private window. Open it on its own in one tab to use saved storage.';
 }
 
 function showWhy(id) {
