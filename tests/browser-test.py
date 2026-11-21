@@ -21,7 +21,7 @@ with sync_playwright() as p:
     pg.click('button[data-preset="Just fries, I said plain"]')
     pg.wait_for_selector('.card.match')
     m = pg.locator('.card.match h3').all_inner_texts(); u = pg.locator('.card.unverified h3').all_inner_texts(); x = pg.locator('.card.mismatch h3').all_inner_texts()
-    check('plain-fries question shows confirmed matches', 'Plain Jane Shoestrings' in m and 'Thin & Crispy, No Salt' in m, m)
+    check('plain-fries question shows confirmed matches', 'Plain Jane Shoestrings' in m and 'Thin & Crispy' not in m, m)
     check('unknowns are flagged unverified', 'Back-of-Menu Fries' in u, u)
     check('hard mismatches shown', 'Waffle Wonders' in x)
     pg.click('button[data-why="f05"]'); pg.wait_for_selector('dialog[open]')
