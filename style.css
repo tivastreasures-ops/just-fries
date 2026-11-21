@@ -38,3 +38,4 @@ th,td{text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--line)}
 footer{max-width:56rem;margin:0 auto;padding:1rem;font-size:.9rem;border-top:2px dashed var(--line)}
 a{color:var(--red)}
 @media(max-width:560px){.panel{flex-direction:column;text-align:center}.cat-art img{width:120px}.card{flex-direction:column;align-items:stretch}}
+button[aria-pressed="true"]{background:#b3120f;color:#fff}

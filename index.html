@@ -12,7 +12,8 @@
 <header class="hero">
   <img class="hero-logo" src="assets/fries-mascot-720.png" alt="Just Fries — I said plain. A winking carton of fries giving a thumbs up.">
   <p class="tagline">Not "who serves fries" — <strong>how is this exact item made, and how sure are we?</strong></p>
-  <p class="demo-banner" role="note">Demo with <strong>fictional</strong> menu data. Nothing here describes a real restaurant or kitchen.</p>
+  <div class="row" role="group" aria-label="Data set"><button data-ds="real" aria-pressed="true">Real data</button> <button data-ds="demo" aria-pressed="false">Demo (fictional)</button></div>
+  <p class="demo-banner" role="note" id="ds-note"></p>
 </header>
 
 <main>

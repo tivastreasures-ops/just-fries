@@ -26,10 +26,10 @@ async function start(dbName = DB_NAME) {
 
 const ops = {
   async init(p) { return start(p?.dbName); },
-  state() { return { prefs: getPrefs(run), items: verdicts(run), storage }; },
-  setPrefs(p) { setPrefs(run, p.prefs); return ops.state(); },
+  state(p) { const ds = p?.ds ?? 'demo'; return { ds, prefs: getPrefs(run), items: verdicts(run, ds), storage }; },
+  setPrefs(p) { setPrefs(run, p.prefs); return ops.state(p); },
   counts() { return counts(run); },
-  reset() { db.reset(); seed(run); return ops.state(); },
+  reset(p) { db.reset(); seed(run); return ops.state(p); },
   free() { db.free(); db = null; return true; },
 };
 

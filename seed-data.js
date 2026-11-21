@@ -1,5 +1,6 @@
-// All data below is FICTIONAL demo data. No real restaurant, menu or kitchen is described.
-export const SEED_VERSION = 1;
+// ITEMS below is FICTIONAL demo data (dataset 'demo'). REAL_ITEMS further down is information the restaurants
+// themselves published (dataset 'real'), with the source link and the date we read it.
+export const SEED_VERSION = 2;
 
 // Which questions each food category asks.
 export const CATEGORIES = {
@@ -24,6 +25,8 @@ export const DIMENSIONS = {
 export const EVIDENCE_KINDS = {
   menu: 'Menu listing (fictional demo)',
   report: 'Diner report (fictional demo)',
+  official: "The restaurant's own published information",
+  secondary: 'Third-party report (not the restaurant)',
 };
 
 // claims: only the dimensions we "know". A missing dimension is UNKNOWN, never assumed.
@@ -53,8 +56,9 @@ export const ITEMS = [
     evidence: { kind: 'menu', checked: '2026-11-11', note: 'Demo menu' } },
   { id: 'f08', cat: 'fries', name: 'Back-of-Menu Fries', place: 'Sunny Side Counter',
     claims: { cut: 'shoestring', seasoning: 'none' } },
-  { id: 'f09', cat: 'fries', name: 'Thin & Crispy, No Salt', place: 'Sunny Side Counter',
-    claims: { cut: 'shoestring', texture: 'crispy', seasoning: 'none', topping: 'none' },
+  { id: 'f09', cat: 'fries', name: 'Thin & Crispy (unsalted on request)', place: 'Sunny Side Counter',
+    claims: { cut: 'shoestring', texture: 'crispy', seasoning: 'salt only', topping: 'none' },
+    requests: { seasoning: ['none'] },
     evidence: { kind: 'menu', checked: '2026-11-13', note: 'Demo menu lists unsalted option' }, fryer: 'shared' },
   // ---- burgers
   { id: 'b01', cat: 'burger', name: 'Ketchup-Only Cheeseburger', place: 'Ketchup & Co.',
@@ -90,4 +94,53 @@ export const PRESETS = {
   fries:  { 'Just fries, I said plain': { cut: 'shoestring', texture: 'crispy', seasoning: 'none', topping: 'none' } },
   burger: { 'Only ketchup': { sauce: 'ketchup only' } },
   drink:  { 'No ice': { ice: 'none' } },
+};
+
+// ---- REAL data: read from each restaurant's own pages on 2026-11-21. Only what was actually published is
+// recorded; everything else is left out so it shows as UNKNOWN. Recipes and kitchens vary by location and change over time.
+const READ_ON = '2026-11-21';
+export const REAL_ITEMS = [
+  { id: 'r01', cat: 'fries', name: 'Five Guys Style Fries', place: 'Five Guys',
+    claims: { seasoning: 'salt only', topping: 'none' },
+    evidence: { kind: 'official', checked: READ_ON,
+      url: 'https://fiveguys.com/-/media/public-site/files/allergen-ingredients-and-nutrition-info/five-guys-us-nutrition--allergen-guide-english.pdf',
+      note: 'US guide lists potatoes, refined peanut oil and salt. Cooked in 100% peanut oil. Cut shape and fryer sharing are not stated in the US pages we read (the UK site says dedicated fryers; US not confirmed).' } },
+  { id: 'r02', cat: 'fries', name: 'Five Guys Cajun Style Fries', place: 'Five Guys',
+    claims: { seasoning: 'spiced', topping: 'none' },
+    evidence: { kind: 'official', checked: READ_ON,
+      url: 'https://fiveguys.com/-/media/public-site/files/allergen-ingredients-and-nutrition-info/five-guys-us-nutrition--allergen-guide-english.pdf',
+      note: 'US guide lists a Cajun seasoning blend on top of the salted fries. Cooked in 100% peanut oil.' } },
+  { id: 'r03', cat: 'fries', name: 'World Famous Fries', place: "McDonald's (US)",
+    claims: { seasoning: 'salt only', topping: 'none' }, requests: { seasoning: ['none'] },
+    evidence: { kind: 'official', checked: READ_ON,
+      url: 'https://www.mcdonalds.com/us/en-us/about-our-food/our-food-your-questions/snacks-and-sides.html',
+      note: 'Salt is added after cooking. They say you can ask for no salt, with a small amount possibly transferred from the bin or scoop. Cut shape and fryer sharing not stated there.' } },
+  { id: 'r04', cat: 'fries', name: 'Waffle Potato Fries', place: 'Chick-fil-A',
+    claims: { cut: 'waffle', seasoning: 'salt only', topping: 'none' },
+    evidence: { kind: 'official', checked: READ_ON,
+      url: 'https://www.chick-fil-a.com/menu/sides/chick-fil-a-waffle-potato-fries',
+      note: 'Menu page: waffle-cut potatoes cooked in canola oil, sprinkled with sea salt. Ingredients vary by location, so check your restaurant. Fryer sharing not stated.' } },
+  { id: 'r05', cat: 'fries', name: 'Natural-Cut Fries with Sea Salt', place: "Wendy's (US)",
+    claims: { seasoning: 'salt only', topping: 'none' },
+    evidence: { kind: 'official', checked: READ_ON,
+      url: 'https://wendys.com/hot-crispy-fries',
+      note: "Wendy's says natural-cut, skin-on potatoes, vegetable oil and sea salt. That cut is not one of the shapes we track, so cut stays unknown. Fryer sharing not stated there." } },
+  { id: 'r06', cat: 'fries', name: 'Crinkle Cut Fries', place: 'Shake Shack',
+    claims: { cut: 'crinkle', topping: 'none' },
+    evidence: { kind: 'secondary', checked: READ_ON,
+      url: 'https://www.mspairport.com/sites/default/files/attachments/Menu_ShakeShack.pdf',
+      note: 'The crinkle-cut name comes from a Shake Shack menu hosted by an airport, not Shake Shack\'s own site. Third-party reports disagree about whether the fryer is shared; we found no official statement.' } },
+  { id: 'r07', cat: 'fries', name: 'French Fries', place: 'In-N-Out Burger',
+    claims: { topping: 'none' },
+    evidence: { kind: 'official', checked: READ_ON,
+      url: 'https://www.in-n-out.com/menu/food-quality',
+      note: 'Official page says fresh potatoes cut in the store and cooked in 100% sunflower oil. It does not state cut shape or seasoning, so those stay unknown.' } },
+];
+
+export const PRESETS_REAL = {
+  fries: {
+    'Plain, no added salt': { seasoning: 'none' },
+    'Waffle cut': { cut: 'waffle' },
+  },
+  burger: {}, drink: {},
 };

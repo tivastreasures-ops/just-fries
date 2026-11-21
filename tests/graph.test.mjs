@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import init, { RelateDb } from '../vendor/relate/relate.js';
 import { makeRunner, seed, isSeeded, setPrefs, getPrefs, verdicts, counts } from '../graph.js';
-import { ITEMS } from '../seed-data.js';
+import { ITEMS, REAL_ITEMS } from '../seed-data.js';
 
 await init({ module_or_path: fs.readFileSync(new URL('../vendor/relate/relate_bg.wasm', import.meta.url)) });
 const run = makeRunner(new RelateDb());
@@ -15,13 +15,13 @@ t('seeded flag set', () => assert.ok(isSeeded(run)));
 const c1 = counts(run);
 seed(run);
 t('seed is idempotent (counts unchanged after second seed)', () => assert.deepEqual(counts(run), c1));
-t('all demo items present', () => assert.equal(c1.MenuItem, ITEMS.length));
+t('all demo items present', () => assert.equal(c1.MenuItem, ITEMS.length + REAL_ITEMS.length));
 
 const status = v => Object.fromEntries(v.map(x => [x.id, x.verdict]));
 
 setPrefs(run, { cut: 'shoestring', texture: 'crispy', seasoning: 'none', topping: 'none' });
 let v = status(verdicts(run));
-t('plain fries question: confirmed exact match', () => { assert.equal(v.f01, 'MATCH'); assert.equal(v.f09, 'MATCH'); });
+t('plain fries question: confirmed exact match', () => { assert.equal(v.f01, 'MATCH'); assert.equal(v.f09, 'REQUEST'); });
 t('hard mismatch detected', () => { assert.equal(v.f02, 'MISMATCH'); assert.equal(v.f03, 'MISMATCH'); });
 t('known claim that conflicts is a MISMATCH even if others are unknown', () => assert.equal(v.f05, 'MISMATCH'));
 t('missing claims = UNVERIFIED, never MATCH', () => assert.equal(v.f08, 'UNVERIFIED'));
@@ -64,3 +64,18 @@ t('invariant: an item with any unknown claim or no evidence is never MATCH', () 
   }
 });
 console.log(`\n${pass} tests passed`);
+
+// ---- real data
+{
+  const stat = () => Object.fromEntries(verdicts(run, 'real').map(x => [x.id, x.verdict]));
+  setPrefs(run, { cut: '', texture: '', seasoning: 'none', topping: '' });
+  let r = stat();
+  t('real: no-salt wanted: McDonalds is only-if-you-ask, never MATCH', () => assert.equal(r.r03, 'REQUEST'));
+  t('real: Five Guys is salted, so MISMATCH for no-salt', () => assert.equal(r.r01, 'MISMATCH'));
+  t('real: In-N-Out never states seasoning -> UNVERIFIED not MATCH', () => assert.equal(r.r07, 'UNVERIFIED'));
+  setPrefs(run, { cut: 'waffle', texture: '', seasoning: '', topping: '' });
+  r = stat();
+  t('real: waffle cut matches only Chick-fil-A', () => { assert.equal(r.r04, 'MATCH'); assert.equal(r.r01, 'UNVERIFIED'); });
+  t('real: every real item carries a source url', () => assert.ok(verdicts(run, 'real').every(x => x.evidence?.url)));
+  t('real: datasets do not leak into each other', () => assert.ok(verdicts(run, 'demo').every(x => x.ds === 'demo')));
+}
