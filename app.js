@@ -69,10 +69,11 @@ function showWhy(id) {
   const ev = it.evidence
     ? `<p><strong>Evidence:</strong> ${esc(EVIDENCE_KINDS[it.evidence.kind] ?? it.evidence.kind)}<br>Last checked: ${esc(it.evidence.checked)}<br>${esc(it.evidence.note)}${it.evidence.url ? `<br><a href="${esc(it.evidence.url)}" target="_blank" rel="noopener">Source page</a>` : ''}<br><small>Recipes and kitchens vary by location and change. Confirm with your restaurant.</small></p>`
     : '<p><strong>Evidence:</strong> <em>none on file</em>, so this can never be a confirmed match.</p>';
+  const fs = it.fryerSource, fsrc = fs?.note ? `<br>${esc(fs.note)}${fs.url ? ` <a href="${esc(fs.url)}" target="_blank" rel="noopener">Source</a>` : ''}` : '';
   const fryer = it.cat !== 'drink'
     ? (it.fryer === 'dedicated'
-      ? '<p><strong>Fryer / cross-contact:</strong> the data says dedicated. Still confirm with the restaurant yourself.</p>'
-      : `<div class="warn"><strong>Cross-contact: ${it.fryer === 'shared' ? 'shared fryer reported' : 'unknown'}.</strong> This must be independently confirmed with the restaurant. We do not infer it.</div>`)
+      ? `<p><strong>Fryer / cross-contact:</strong> dedicated, per a ${esc(it.fryerSource.kind || 'demo')} source. Still confirm with the restaurant yourself.${fsrc}</p>`
+      : `<div class="warn"><strong>Cross-contact: ${it.fryer === 'shared' ? 'shared fryer reported' : 'unknown'}.</strong> This must be independently confirmed with the restaurant. We do not infer it.${fsrc}</div>`)
     : '';
   $('#why-body').innerHTML = `<h2 id="why-title">${esc(it.name)}</h2>
     <p><span class="b ${cls}">${text}</span> · ${esc(it.place)} <em>(${tag(it)})</em></p>

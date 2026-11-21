@@ -53,8 +53,8 @@ export function seed(run) {
     }
     if (it.fryer) {
       run(`MATCH (m:MenuItem {id: $id})
-           MERGE (f:Fryer {id: $fid}) SET f.status = $status
-           MERGE (m)-[:COOKED_IN]->(f)`, { id: it.id, fid: 'fryer-' + it.id, status: it.fryer });
+           MERGE (f:Fryer {id: $fid}) SET f.status = $status, f.note = $fnote, f.url = $furl, f.kind = $fkind
+           MERGE (m)-[:COOKED_IN]->(f)`, { id: it.id, fid: 'fryer-' + it.id, status: it.fryer, fnote: it.fryerSource?.note ?? '', furl: it.fryerSource?.url ?? '', fkind: it.fryerSource?.kind ?? '' });
     }
   }
   run('MERGE (m:Meta {id: "seed"}) SET m.version = $v', { v: SEED_VERSION });
@@ -101,7 +101,7 @@ MATCH (m)-[:SERVED_AT]->(p:Place)
 OPTIONAL MATCH (m)-[:VERIFIED_BY]->(e:EvidenceSource)
 OPTIONAL MATCH (m)-[:COOKED_IN]->(f:Fryer)
 RETURN m.id AS id, m.name AS name, c.name AS cat, p.name AS place,
-       e.kind AS ev_kind, e.last_checked AS ev_checked, e.note AS ev_note, e.url AS ev_url, f.status AS fryer
+       e.kind AS ev_kind, e.last_checked AS ev_checked, e.note AS ev_note, e.url AS ev_url, f.status AS fryer, f.note AS f_note, f.url AS f_url, f.kind AS f_kind
 ORDER BY name`;
 
 // Roll claims up into one verdict. Unknown data can NEVER produce MATCH.
@@ -126,7 +126,7 @@ export function verdicts(run, ds = 'demo') {
     return {
       id: it.id, name: it.name, cat: it.cat, place: it.place, ds,
       evidence: it.ev_kind ? { kind: it.ev_kind, checked: it.ev_checked, note: it.ev_note, url: it.ev_url || '' } : null,
-      fryer: it.fryer ?? 'unknown',
+      fryer: it.fryer ?? 'unknown', fryerSource: { note: it.f_note || '', url: it.f_url || '', kind: it.f_kind || '' },
       claims,
       verdict: rollUp(claims, !!it.ev_kind),
     };
