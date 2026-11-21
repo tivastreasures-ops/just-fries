@@ -1,0 +1,3 @@
+# For Apache hosts (e.g. GreenGeeks): serve WebAssembly with the right type and enable HTTPS-only caching basics.
+AddType application/wasm .wasm
+AddType text/javascript .js .mjs

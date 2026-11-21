@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Just Fries — a food compatibility graph</title>
+<meta name="description" content="Find the exact menu item that fits your preferences, see exactly why, and always see what is still unknown. Built on Relate by Neo4j.">
+<link rel="icon" href="assets/fries-mascot-720.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <img class="hero-logo" src="assets/fries-mascot-720.png" alt="Just Fries — I said plain. A winking carton of fries giving a thumbs up.">
+  <p class="tagline">Not "who serves fries" — <strong>how is this exact item made, and how sure are we?</strong></p>
+  <p class="demo-banner" role="note">Demo with <strong>fictional</strong> menu data. Nothing here describes a real restaurant or kitchen.</p>
+</header>
+
+<main>
+  <nav class="tabs" role="tablist" aria-label="Food type">
+    <button role="tab" data-cat="fries" aria-selected="true">Fries</button>
+    <button role="tab" data-cat="burger" aria-selected="false">Burgers</button>
+    <button role="tab" data-cat="drink" aria-selected="false">Drinks</button>
+  </nav>
+
+  <section class="panel prefs" aria-labelledby="prefs-h">
+    <div class="cat-art"><img id="cat-art" src="assets/fries-mascot-720.png" alt=""></div>
+    <div>
+      <h2 id="prefs-h">What I want <span id="cat-name">fries</span> to be</h2>
+      <p class="hint">Only what you set is checked. “No preference” is never held against an item.</p>
+      <form id="prefs-form"></form>
+      <div class="row">
+        <span id="presets"></span>
+        <button type="button" id="clear" class="ghost">Clear this type</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="results-h">
+    <h2 id="results-h">Results</h2>
+    <p id="summary" class="hint" aria-live="polite">Loading the graph engine…</p>
+    <div id="results"></div>
+  </section>
+</main>
+
+<dialog id="why" aria-labelledby="why-title">
+  <form method="dialog"><button class="close" aria-label="Close">✕</button></form>
+  <div id="why-body"></div>
+</dialog>
+
+<footer>
+  <p><strong>How to read this.</strong> <span class="b match">✓ Match</span> every checked claim is confirmed, with evidence on file.
+  <span class="b mismatch">✕ Mismatch</span> a known claim conflicts with what you want.
+  <span class="b unverified">? Unverified</span> something you care about is unknown, or there is no evidence. <em>Unknown is never treated as safe.</em></p>
+  <p>“Safe” is a personal status only you can set. This is not medical advice, not a food-safety or allergy guarantee, and not a diagnostic or food-expansion tool. Shared fryers and cross-contact must always be confirmed with the restaurant yourself.</p>
+  <p id="storage" class="hint"></p>
+  <p class="row"><button id="reset" class="ghost">Reset demo data</button>
+  <a href="https://github.com/relatedb/relate" rel="noopener">Powered by Relate</a> ·
+  <a href="ASSETS.md">Assets &amp; AI-use disclosure</a></p>
+</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
