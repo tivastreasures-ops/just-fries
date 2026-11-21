@@ -20,7 +20,7 @@ const BADGE = {
   MATCH: ['match', '✓ Match'], MISMATCH: ['mismatch', '✕ Mismatch'], REQUEST: ['unverified', '☝ Only if you ask'],
   UNVERIFIED: ['unverified', '? Unverified'], NO_PREFERENCE: ['none', '– No preference set'],
 };
-const CLAIM_BADGE = { match: ['match', '✓ confirmed'], mismatch: ['mismatch', '✕ conflicts'], unknown: ['unverified', '? unknown'] };
+const CLAIM_BADGE = { match: ['match', '✓ confirmed'], mismatch: ['mismatch', '✕ conflicts'], unknown: ['unverified', '? unknown'], request: ['unverified', '☝ only if you ask'] };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 function renderForm() {
@@ -63,7 +63,7 @@ function showWhy(id) {
   const it = state.items.find(i => i.id === id);
   const [cls, text] = BADGE[it.verdict];
   const rows = it.claims.length ? it.claims.map(c => {
-    const [bc, bt] = CLAIM_BADGE[c.claim];
+    const [bc, bt] = CLAIM_BADGE[c.claim] ?? (console.warn('unknown claim type', c.claim), ['unverified', '? unknown']);
     return `<tr><td>${esc(c.dim_label)}</td><td>${esc(c.wanted)}</td><td>${c.actual ? esc(c.actual) : '<em>not stated</em>'}</td><td><span class="b ${bc}">${bt}</span></td></tr>`;
   }).join('') : '<tr><td colspan="4"><em>No preferences set for this food type.</em></td></tr>';
   const ev = it.evidence
